@@ -36,15 +36,15 @@ def scrape_item_content_threading(page_link):
         try:
             html = requests.get(item_link).content
             try:
-                mongo.html_tab.insert({'_id': item_link, 'category': category, 'html': html})
+                mongo.html_tab.insert({'_id': item_link, 'category': category,
+                                       'html': unicode(html, errors='replace')})
             except DuplicateKeyError:
                 print 'Item already exists!'
-        except:
-            print 'Item link not accessible: %s' % item_link
+        except Exception as e:
+            print e
             log_file.write('Item link not accessible: %s' % item_link)
 
     jobs = []
-    print category_item_link_tup_lst
     for i, category_item_link_tup in enumerate(category_item_link_tup_lst):
         thread = Thread(target=scrape_item_content, args=(category_item_link_tup,))
         jobs.append(thread)
@@ -54,13 +54,10 @@ def scrape_item_content_threading(page_link):
     for j in jobs:
         j.join()
 
-def scrape_page_parallel(n=-1):
+def scrape_page_parallel():
     if os.path.isfile(page_link_fname):
         pool = Pool(processes=n_cores)
-        if n == -1:
-            page_links = map(lambda x: x.strip(), open(page_link_fname).readlines()) ###
-        else:
-            page_links = map(lambda x: x.strip(), open(page_link_fname).readlines())[:n]
+        page_links = map(lambda x: x.strip(), open(page_link_fname).readlines())[:1]
         pool.map(scrape_item_content_threading, page_links)
     else:
         raise Exception('Page Link File does not exist!')
@@ -70,6 +67,4 @@ def scrape_page_parallel(n=-1):
 
 if __name__ == '__main__':
     # scrape_item_content_threading('http://www.walmart.com/browse/food/chips/976759_976787_1001390?page=1')
-    import sys
-    n = int(sys.argv[1])
-    scrape_page_parallel(n=n)
+    scrape_page_parallel()
