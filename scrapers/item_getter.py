@@ -69,4 +69,6 @@ def scrape_page_parallel(n=-1):
 
 if __name__ == '__main__':
     # scrape_item_content_threading('http://www.walmart.com/browse/food/chips/976759_976787_1001390?page=1')
-    scrape_page_parallel()
+    import sys
+    n = sys.argv[1]
+    scrape_page_parallel(n=n)
