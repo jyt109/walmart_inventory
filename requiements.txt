@@ -1,5 +1,4 @@
 multiprocessing
 requests
 pymongo
-threading
 beautifulsoup4
