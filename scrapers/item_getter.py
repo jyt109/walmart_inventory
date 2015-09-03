@@ -53,10 +53,13 @@ def scrape_item_content_threading(page_link):
     for j in jobs:
         j.join()
 
-def scrape_page_parallel():
+def scrape_page_parallel(n=-1):
     if os.path.isfile(page_link_fname):
         pool = Pool(processes=n_cores)
-        page_links = map(lambda x: x.strip(), open(page_link_fname).readlines()) ###
+        if n == -1:
+            page_links = map(lambda x: x.strip(), open(page_link_fname).readlines()) ###
+        else:
+            page_links = map(lambda x: x.strip(), open(page_link_fname).readlines())[:n]
         pool.map(scrape_item_content_threading, page_links)
     else:
         raise Exception('Page Link File does not exist!')
