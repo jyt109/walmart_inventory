@@ -3,11 +3,13 @@ __author__ = 'jeffreytang'
 from threading import Thread
 from multiprocessing import Pool
 import multiprocessing
+import os
+
 import requests
 from bs4 import BeautifulSoup
-from mongo.base_mongo import BaseMongo
-import os
 from pymongo.errors import DuplicateKeyError
+
+from scrapers.base_mongo import BaseMongo
 
 base_url = 'http://www.walmart.com'
 n_cores = multiprocessing.cpu_count()
