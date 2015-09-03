@@ -1,6 +1,6 @@
 __author__ = 'jeffreytang'
 
-from scrapers.base_link_getter import BaseLinkGetter
+from base_link_getter import BaseLinkGetter
 from multiprocessing import Pool
 import requests
 from bs4 import BeautifulSoup

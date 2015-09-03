@@ -8,8 +8,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from pymongo.errors import DuplicateKeyError
-
-from scrapers.base_mongo import BaseMongo
+from base_mongo import BaseMongo
 
 base_url = 'http://www.walmart.com'
 n_cores = multiprocessing.cpu_count()
