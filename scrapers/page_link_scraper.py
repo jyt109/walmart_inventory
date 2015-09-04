@@ -1,20 +1,21 @@
 __author__ = 'jeffreytang'
 
-from base_link_getter import BaseLinkGetter
+from base_scraper import BaseScraper
 from multiprocessing import Pool
 import requests
 from bs4 import BeautifulSoup
+from utils.files import get_full_path
 
 
 # Function to make multiprocessing work in a class context.
 def unwrap_get_items_from_category_link(category_link_lst):
-    return PageLinkGetter.get_items_from_category_link(category_link_lst)
+    return PageLinkScraper.get_items_from_category_link(category_link_lst)
 
-class PageLinkGetter(BaseLinkGetter):
-    def __init__(self, taxonomy_id='976759', out_file_name='page_links.txt'):
+class PageLinkScraper(BaseScraper):
+    def __init__(self, taxonomy_id='976759', out_file_name='data/page_links.txt'):
         super(self.__class__, self).__init__()
         self.taxonomy_id = taxonomy_id
-        self.out_file_name = out_file_name
+        self.out_file_name = get_full_path(out_file_name)
 
     def get_category_links(self):
         html = requests.get('http://www.walmart.com/cp/%s' % self.taxonomy_id).content
@@ -52,5 +53,5 @@ class PageLinkGetter(BaseLinkGetter):
         self.write_to_csv(link_lst_of_lst, self.out_file_name)
 
 if __name__ == '__main__':
-    plg = PageLinkGetter()
+    plg = PageLinkScraper()
     plg.run()
