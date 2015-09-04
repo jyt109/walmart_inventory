@@ -2,13 +2,15 @@ __author__ = 'jeffreytang'
 
 from threading import Thread
 from multiprocessing import Pool
-from base_scraper import BaseScraper
 import os
 from time import sleep
+
 import requests
 from bs4 import BeautifulSoup
 from pymongo.errors import DuplicateKeyError
-from utils.files import get_full_path
+
+from walmart_inventory.scraper.base_scraper import BaseScraper
+from walmart_inventory.utils.files import get_full_path
 
 
 class ItemScraperVar(BaseScraper):

@@ -1,10 +1,13 @@
 __author__ = 'jeffreytang'
 
-from base_scraper import BaseScraper
 from multiprocessing import Pool
+
 import requests
 from bs4 import BeautifulSoup
-from utils.files import get_full_path
+
+from walmart_inventory.scraper.base_scraper import BaseScraper
+from walmart_inventory.utils.files import get_full_path
+
 
 
 # Function to make multiprocessing work in a class context.

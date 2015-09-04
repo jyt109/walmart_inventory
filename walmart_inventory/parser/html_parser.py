@@ -1,12 +1,14 @@
 __author__ = 'jeffreytang'
 
-from mongo.base_mongo import BaseMongo
+import os
+
 from bs4 import BeautifulSoup
-from utils.files import get_full_path
 from dateutil import parser
 import requests
-import os
 from pymongo.errors import DuplicateKeyError
+from walmart_inventory.mongo.base_mongo import BaseMongo
+from walmart_inventory.utils.files import get_full_path
+
 
 class HTMLParser(BaseMongo):
     def __init__(self, image_path='data/images'):

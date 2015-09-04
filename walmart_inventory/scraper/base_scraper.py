@@ -2,7 +2,7 @@ __author__ = 'jeffreytang'
 
 import multiprocessing
 
-from mongo.base_mongo import BaseMongo
+from walmart_inventory.mongo.base_mongo import BaseMongo
 
 
 class BaseScraper(object):
