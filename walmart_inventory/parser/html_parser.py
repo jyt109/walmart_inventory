@@ -83,11 +83,15 @@ class HTMLParser(BaseMongo):
             counter += 1
             if counter % 1000 == 0:
                 print 'Itemized %s' % counter
-            parsed_dict = self.parse_item(html_item['html'])
-            parsed_dict['link'] = html_item['_id']
-            parsed_dict['_id'] = int(html_item['_id'].split('/')[-1].split('?')[0])
-            parsed_dict['category'] = html_item['category']
-            self.insert_into_mongo(parsed_dict)
+            try:
+                parsed_dict = self.parse_item(html_item['html'])
+                parsed_dict['link'] = html_item['_id']
+                parsed_dict['_id'] = int(html_item['_id'].split('/')[-1].split('?')[0])
+                parsed_dict['category'] = html_item['category']
+                self.insert_into_mongo(parsed_dict)
+            except Exception as e:
+                print html_item['_id']
+                raise e
 
 
 
