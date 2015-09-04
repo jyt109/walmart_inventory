@@ -1,7 +1,6 @@
 __author__ = 'jeffreytang'
 
-from walmart_inventory.parser.html_parser import HTMLParser
+from walmart_inventory.parser import html_parser
 
 if __name__ == '__main__':
-    html_parser = HTMLParser()
     html_parser.run()
