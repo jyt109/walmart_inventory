@@ -4,7 +4,7 @@ from threading import Thread
 from multiprocessing import Pool
 import multiprocessing
 import os
-
+from time import sleep
 import requests
 from bs4 import BeautifulSoup
 from pymongo.errors import DuplicateKeyError
@@ -34,15 +34,19 @@ def scrape_item_content_threading(page_link):
     def scrape_item_content(category_item_link_tup):
         category, item_link = category_item_link_tup
         try:
-            html = requests.get(item_link).content
+            response = requests.get(item_link)
             try:
-                mongo.html_tab.insert({'_id': item_link, 'category': category,
-                                       'html': unicode(html, errors='replace')})
+		if response.status_code == 200:
+	                mongo.html_tab.insert({'_id': item_link, 'category': category,
+        	                               'html': unicode(response.content, errors='replace')})
+		else:
+		   raise Exception('Status code %s' % response.status_code)
             except DuplicateKeyError:
                 print 'Item already exists!'
+	    sleep(0.8)	
         except Exception as e:
             print e
-            log_file.write('Item link not accessible: %s' % item_link)
+            log_file.write(item_link + '\n')
 
     jobs = []
     for i, category_item_link_tup in enumerate(category_item_link_tup_lst):
@@ -50,6 +54,7 @@ def scrape_item_content_threading(page_link):
         jobs.append(thread)
         print 'started %s-%d' % (category, i)
         thread.start()
+	sleep(0.8)
 
     for j in jobs:
         j.join()
@@ -57,7 +62,7 @@ def scrape_item_content_threading(page_link):
 def scrape_page_parallel():
     if os.path.isfile(page_link_fname):
         pool = Pool(processes=n_cores)
-        page_links = map(lambda x: x.strip(), open(page_link_fname).readlines())[:1]
+        page_links = map(lambda x: x.strip(), open(page_link_fname).readlines())
         pool.map(scrape_item_content_threading, page_links)
     else:
         raise Exception('Page Link File does not exist!')
