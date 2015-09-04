@@ -58,6 +58,11 @@ class HTMLParser(BaseMongo):
         avg_stars = None
         about = None
 
+        # Get Name. If there is no name then just ignore
+        try:
+            name = soup.select('[itemprop="name"]')[0].text.strip()
+        except IndexError:
+            raise Exception('There is no name for this item')
         # Price
         price_str = str(soup.select('[itemprop="price"]')[0].text.strip().strip('$').strip())
         if price_str:
@@ -65,8 +70,6 @@ class HTMLParser(BaseMongo):
         # Get Image
         image_url = soup.select('[itemprop="image"]')[0]['src'].strip()
         self.save_image(image_url)
-        # Get Name
-        name = soup.select('[itemprop="name"]')[0].text.strip()
         # Get Average stars
         avg_stars_tags = soup.select('[itemprop="ratingValue"] .visuallyhidden')
         if len(avg_stars_tags) > 0:
@@ -102,8 +105,7 @@ class HTMLParser(BaseMongo):
                 parsed_dict['category'] = html_item['category']
                 self.insert_into_mongo(parsed_dict)
             except Exception as e:
-                print html_item['_id']
-                raise e
+                print html_item['_id'] + '---' + e
 
 
 
