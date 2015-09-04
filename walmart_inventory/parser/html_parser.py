@@ -101,7 +101,6 @@ def insert_into_mongo(d):
 
 def parse_html(html_item):
     try:
-        print html_item['_id']
         parsed_dict = parse_item(html_item['html'])
         parsed_dict['link'] = html_item['_id']
         parsed_dict['_id'] = int(html_item['_id'].split('/')[-1].split('?')[0])
