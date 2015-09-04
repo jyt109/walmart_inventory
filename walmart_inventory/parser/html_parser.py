@@ -111,18 +111,13 @@ def parse_html(html_item):
         print html_item['_id'] + '---' + str(e)
 
 def run():
-        # Make sure you have enough memory for this
-        print 'Loading data...'
         item_entry_lst = list(html_tab.find({}))
-        print 'Items to be parsed: %d' % len(item_entry_lst)
-        print 'Cores used: %d' % multiprocessing.cpu_count()
-        pool = Pool(processes=multiprocessing.cpu_count())
-        pool.map(parse_html, item_entry_lst)
-        # counter = 0
-        # for html_item in cursor:
-        #     counter += 1
-        #     if counter % 1000 == 0:
-        #         print 'Itemized %s' % counter
+        counter = 0
+        for html_item in item_entry_lst:
+            counter += 1
+            if counter % 1000 == 0:
+                print 'Itemized %s' % counter
+            parse_html(html_item)
 
 
 
