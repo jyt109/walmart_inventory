@@ -8,8 +8,6 @@ from bs4 import BeautifulSoup
 from walmart_inventory.scraper.base_scraper import BaseScraper
 from walmart_inventory.utils.files import get_full_path
 
-
-
 # Function to make multiprocessing work in a class context.
 def unwrap_get_items_from_category_link(category_link_lst):
     return PageLinkScraper.get_items_from_category_link(category_link_lst)
@@ -54,7 +52,3 @@ class PageLinkScraper(BaseScraper):
         category_links = self.get_category_links()
         link_lst_of_lst = self.get_items_from_category_link_parallel(category_links)
         self.write_to_csv(link_lst_of_lst, self.out_file_name)
-
-if __name__ == '__main__':
-    plg = PageLinkScraper()
-    plg.run()

@@ -19,7 +19,7 @@ class ItemScraperVar(BaseScraper):
         super(self.__class__, self).__init__()
         self.item_link_template = self.base_url + '/ip/%s?reviews_limit=100&'
         self.page_link_fname = get_full_path('data/page_links.txt')
-        self.log_file = open(get_full_path('log.txt'), 'w')
+        self.log_file = open(get_full_path('data/log.txt'), 'w')
 
 
 item_scraper = ItemScraperVar()
@@ -82,7 +82,3 @@ def scrape_page_parallel():
         raise Exception('Page Link File does not exist!')
 
     return 1
-
-
-if __name__ == '__main__':
-    scrape_page_parallel()

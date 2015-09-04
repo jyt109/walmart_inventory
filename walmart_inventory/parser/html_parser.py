@@ -18,18 +18,19 @@ class HTMLParser(BaseMongo):
     def parse_review(self, soup):
         review_tag_lst = soup.select('.customer-review')
         review_lst = []
-        for review in review_tag_lst:
-            review_dict = dict()
-            review_dict['review_title'] = review.select('.customer-review-body .customer-review-title')[0].text
-            review_dict['review_date'] = parser.parse(review.select('.customer-review-body .customer-review-date')[0]
-                                                      .text)
-            review_dict['review_text'] = review.select('.customer-review-body .js-customer-review-text')[0].text
-            review_dict['stars'] = float(review.select('.customer-review-body .stars .visuallyhidden')[0].text
-                                         .strip('stars').strip()) / 5
-            review_dict['helpful'] = int(review.select('.customer-review-body .js-vote-positive-count')[0].text)
-            review_dict['not_helpful'] = int(review.select('.customer-review-body .js-vote-negative-count')[0].text)
-            review_dict['recommend'] = review.select('.customer-info .customer-attributes span')[0].text == 'Yes'
-            review_lst.append(review_dict)
+        if len(review_tag_lst) > 0:
+            for review in review_tag_lst:
+                review_dict = dict()
+                review_dict['review_title'] = review.select('.customer-review-body .customer-review-title')[0].text
+                review_dict['review_date'] = parser.parse(review.select('.customer-review-body .customer-review-date')[0]
+                                                          .text)
+                review_dict['review_text'] = review.select('.customer-review-body .js-customer-review-text')[0].text
+                review_dict['stars'] = float(review.select('.customer-review-body .stars .visuallyhidden')[0].text
+                                             .strip('stars').strip()) / 5
+                review_dict['helpful'] = int(review.select('.customer-review-body .js-vote-positive-count')[0].text)
+                review_dict['not_helpful'] = int(review.select('.customer-review-body .js-vote-negative-count')[0].text)
+                review_dict['recommend'] = review.select('.customer-info .customer-attributes span')[0].text == 'Yes'
+                review_lst.append(review_dict)
         return review_lst
 
     def save_image(self, image_url):
@@ -40,16 +41,29 @@ class HTMLParser(BaseMongo):
     def parse_item(self, html):
         soup = BeautifulSoup(html)
 
+        # item can be out of stock, then there is no price
+        price = None
+        avg_stars = None
+        about = None
+
+        # Price
         price_str = str(soup.select('[itemprop="price"]')[0].text.strip().strip('$').strip())
-        price = None # item can be out of stock, then there is no price
         if price_str:
             price = float(price_str)
+        # Get Image
         image_url = soup.select('[itemprop="image"]')[0]['src'].strip()
         self.save_image(image_url)
+        # Get Name
         name = soup.select('[itemprop="name"]')[0].text.strip()
-        avg_stars = soup.select('[itemprop="ratingValue"] .visuallyhidden')[0].text\
-            .strip('stars').strip()
-        about = soup.select('.product-about .module p')[0].text
+        # Get Average stars
+        avg_stars_tags = soup.select('[itemprop="ratingValue"] .visuallyhidden')
+        if len(avg_stars_tags) > 0:
+            avg_stars = avg_stars_tags[0].text.strip('stars').strip()
+        # Get the About paragraph
+        about_tags = soup.select('.product-about .module p')
+        if len(about_tags) > 0:
+            about = about_tags[0].text
+        # Get Reviews
         review_lst = self.parse_review(soup)
 
         return dict(price=price, image_url=image_url, name=name,
@@ -74,14 +88,6 @@ class HTMLParser(BaseMongo):
             parsed_dict['_id'] = int(html_item['_id'].split('/')[-1].split('?')[0])
             parsed_dict['category'] = html_item['category']
             self.insert_into_mongo(parsed_dict)
-
-if __name__ == '__main__':
-    html_parser = HTMLParser()
-    html_parser.run()
-
-
-
-
 
 
 
