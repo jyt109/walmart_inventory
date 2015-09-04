@@ -21,14 +21,26 @@ class HTMLParser(BaseMongo):
         if len(review_tag_lst) > 0:
             for review in review_tag_lst:
                 review_dict = dict()
+                helpful_num = None
+                not_helpful_num = None
+
                 review_dict['review_title'] = review.select('.customer-review-body .customer-review-title')[0].text
                 review_dict['review_date'] = parser.parse(review.select('.customer-review-body .customer-review-date')[0]
                                                           .text)
                 review_dict['review_text'] = review.select('.customer-review-body .js-customer-review-text')[0].text
                 review_dict['stars'] = float(review.select('.customer-review-body .stars .visuallyhidden')[0].text
                                              .strip('stars').strip()) / 5
-                review_dict['helpful'] = int(review.select('.customer-review-body .js-vote-positive-count')[0].text)
-                review_dict['not_helpful'] = int(review.select('.customer-review-body .js-vote-negative-count')[0].text)
+                # The number of people find the review helpful
+                helpful_tag = review.select('.customer-review-body .js-vote-positive-count')
+                if len(helpful_tag) > 0:
+                    helpful_num = int(helpful_tag[0].text)
+                review_dict['helpful'] = helpful_num
+                # The number of people find the review unhelpful
+                not_helpful_tag = review.select('.customer-review-body .js-vote-negative-count')
+                if len(not_helpful_tag) > 0:
+                    not_helpful_num = int(not_helpful_tag[0].text)
+                review_dict['not_helpful'] = not_helpful_num
+                # Recommend to a friend
                 review_dict['recommend'] = review.select('.customer-info .customer-attributes span')[0].text == 'Yes'
                 review_lst.append(review_dict)
         return review_lst
