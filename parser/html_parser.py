@@ -43,6 +43,7 @@ class HTMLParser(BaseMongo):
         if price_str:
             price = float(price_str)
         image_url = soup.select('[itemprop="image"]')[0]['src'].strip()
+        self.save_image(image_url)
         name = soup.select('[itemprop="name"]')[0].text.strip()
         avg_stars = soup.select('[itemprop="ratingValue"] .visuallyhidden')[0].text\
             .strip('stars').strip()
