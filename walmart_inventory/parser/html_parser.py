@@ -101,6 +101,7 @@ def insert_into_mongo(d):
 
 def parse_html(html_item):
     try:
+        print html_item['_id']
         parsed_dict = parse_item(html_item['html'])
         parsed_dict['link'] = html_item['_id']
         parsed_dict['_id'] = int(html_item['_id'].split('/')[-1].split('?')[0])
@@ -111,6 +112,8 @@ def parse_html(html_item):
 
 def run():
         item_entry_lst = list(html_tab.find({}))
+        print 'Items to be parsed: %d' % len(item_entry_lst)
+        print 'Cores used: %d' % multiprocessing.cpu_count()
         pool = Pool(processes=multiprocessing.cpu_count())
         pool.map(parse_html, item_entry_lst)
         # counter = 0
