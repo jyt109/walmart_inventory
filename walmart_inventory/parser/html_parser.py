@@ -111,13 +111,13 @@ def parse_html(html_item):
         print html_item['_id'] + '---' + str(e)
 
 def run():
-        item_entry_lst = list(html_tab.find({}))
-        counter = 0
-        for html_item in item_entry_lst:
-            counter += 1
-            if counter % 1000 == 0:
-                print 'Itemized %s' % counter
-            parse_html(html_item)
+    item_entry_lst = html_tab.find({})
+    counter = 0
+    for html_item in item_entry_lst:
+        counter += 1
+        if counter % 1000 == 0:
+            print 'Itemized %s' % counter
+        parse_html(html_item)
 
 
 
