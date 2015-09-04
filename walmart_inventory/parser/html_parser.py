@@ -111,6 +111,8 @@ def parse_html(html_item):
         print html_item['_id'] + '---' + str(e)
 
 def run():
+        # Make sure you have enough memory for this
+        print 'Loading data...'
         item_entry_lst = list(html_tab.find({}))
         print 'Items to be parsed: %d' % len(item_entry_lst)
         print 'Cores used: %d' % multiprocessing.cpu_count()
