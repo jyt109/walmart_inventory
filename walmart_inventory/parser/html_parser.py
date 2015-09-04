@@ -105,7 +105,7 @@ class HTMLParser(BaseMongo):
                 parsed_dict['category'] = html_item['category']
                 self.insert_into_mongo(parsed_dict)
             except Exception as e:
-                print html_item['_id'] + '---' + e
+                print html_item['_id'] + '---' + str(e)
 
 
 
